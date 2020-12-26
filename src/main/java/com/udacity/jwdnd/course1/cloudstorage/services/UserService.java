@@ -46,4 +46,8 @@ public class UserService {
             throw new UserIsNotAvailableException("The username already exists");
         }
     }
+
+    public User getUser(String username) {
+        return userMapper.getUser(username);
+    }
 }
