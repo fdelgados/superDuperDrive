@@ -41,7 +41,8 @@ public class CredentialService {
         return credentialDtos;
     }
 
-    public void saveCredential(CredentialDto credentialForm) {
+    public void saveCredential(CredentialDto credentialForm)
+            throws CredentialNotFoundException, UnableToSaveCredentialException {
         if (credentialForm.credentialExist()) {
             updateCredential(credentialForm);
             return;
@@ -50,18 +51,25 @@ public class CredentialService {
         createNewCredential(credentialForm);
     }
 
-    private void updateCredential(CredentialDto credentialDto) {
+    private void updateCredential(CredentialDto credentialDto) throws CredentialNotFoundException, UnableToSaveCredentialException {
         Credential credential = credentialMapper.search(credentialDto.getCredentialId());
+
+        if (credential == null) {
+            throw new CredentialNotFoundException("Credential not found");
+        }
+
         String password = encryptionService.encryptValue(credentialDto.getPlainPassword(), credential.getKey());
 
         credential.setPassword(password);
         credential.setUrl(credentialDto.getUrl());
         credential.setUsername(credentialDto.getUsername());
 
-        credentialMapper.update(credential);
+        if (!credentialMapper.update(credential)) {
+            throw new UnableToSaveCredentialException("Unable to update credential");
+        }
     }
 
-    private void createNewCredential(CredentialDto credentialDto) {
+    private void createNewCredential(CredentialDto credentialDto) throws UnableToSaveCredentialException {
         String key = generateEncryptionKey();
         String password = encryptionService.encryptValue(credentialDto.getPlainPassword(), key);
 
@@ -72,7 +80,9 @@ public class CredentialService {
                 password,
                 credentialDto.getUserId());
 
-        credentialMapper.add(credential);
+        if (credentialMapper.add(credential) == 0) {
+            throw new UnableToSaveCredentialException("Unable to create new credential");
+        }
     }
 
     private String generateEncryptionKey() {
@@ -81,5 +91,11 @@ public class CredentialService {
         random.nextBytes(key);
 
         return Base64.getEncoder().encodeToString(key);
+    }
+
+    public void removeCredential(Integer id) throws UnableToDeleteCredentialException {
+        if (!credentialMapper.remove(id)) {
+            throw new UnableToDeleteCredentialException("Cannot delete credential");
+        }
     }
 }

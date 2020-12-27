@@ -140,9 +140,9 @@
                                                 th:data-id="${credential.credentialId}"
                                                 th:data-url="${credential.url}"
                                                 th:data-username="${credential.username}"
-                                                th:data-password="${credential.plainPassword}"
-                                        >Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                                th:data-password="${credential.plainPassword}">
+                                            Edit</button>
+                                        <a th:href="@{/credential/remove/(id=${credential.credentialId})}" class="btn btn-danger">Delete</a>
                                     </td>
                                     <th scope="row" th:text="${credential.url}"></th>
                                     <td th:text="${credential.username}"></td>
