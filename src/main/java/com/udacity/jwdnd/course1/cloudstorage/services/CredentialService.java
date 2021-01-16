@@ -25,20 +25,23 @@ public class CredentialService {
         List<CredentialDto> credentialDtos = new ArrayList<>();
 
         for(Credential credential: credentials) {
-            CredentialDto credentialDto = new CredentialDto();
-            String plainPassword = encryptionService.decryptValue(credential.getPassword(), credential.getKey());
-
-            credentialDto.setCredentialId(credential.getCredentialId());
-            credentialDto.setUserId(credential.getUserId());
-            credentialDto.setUrl(credential.getUrl());
-            credentialDto.setUsername(credential.getUsername());
-            credentialDto.setPassword(credential.getPassword());
-            credentialDto.setPlainPassword(plainPassword);
-
-            credentialDtos.add(credentialDto);
+            credentialDtos.add(toDto(credential));
         }
 
         return credentialDtos;
+    }
+
+    private CredentialDto toDto(Credential credential) {
+        CredentialDto credentialDto = new CredentialDto();
+        String plainPassword = encryptionService.decryptValue(credential.getPassword(), credential.getKey());
+
+        credentialDto.setCredentialId(credential.getCredentialId());
+        credentialDto.setUserId(credential.getUserId());
+        credentialDto.setUrl(credential.getUrl());
+        credentialDto.setUsername(credential.getUsername());
+        credentialDto.setPassword(credential.getPassword());
+        credentialDto.setPlainPassword(plainPassword);
+        return credentialDto;
     }
 
     public void saveCredential(CredentialDto credentialForm)
@@ -73,8 +76,7 @@ public class CredentialService {
         String key = generateEncryptionKey();
         String password = encryptionService.encryptValue(credentialDto.getPlainPassword(), key);
 
-        Credential credential = new Credential(credentialDto.getCredentialId(),
-                credentialDto.getUrl(),
+        Credential credential = new Credential(credentialDto.getUrl(),
                 credentialDto.getUsername(),
                 key,
                 password,
