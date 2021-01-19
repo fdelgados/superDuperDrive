@@ -68,6 +68,7 @@ class CloudStorageApplicationTests {
 		driver.get("http://localhost:" + port + "/invalid");
 
 		Assertions.assertEquals("Page not found", driver.getTitle());
+		homePage.get();
 	}
 
 	@Test
