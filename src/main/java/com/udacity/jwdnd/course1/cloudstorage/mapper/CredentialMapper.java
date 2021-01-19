@@ -20,6 +20,6 @@ public interface CredentialMapper {
     @Delete("DELETE FROM CREDENTIALS WHERE credentialid = #{credentialid}")
     Boolean remove(Integer credentialId);
 
-    @Update("UPDATE CREDENTIALS SET url = #{url}, username = #{username}, key = #{key}, password = #{password} WHERE credentialid = #{credentialid}")
+    @Update("UPDATE CREDENTIALS SET url = #{url}, username = #{username}, key = #{key}, password = #{password} WHERE credentialid = #{credentialId}")
     Boolean update(Credential credential);
 }

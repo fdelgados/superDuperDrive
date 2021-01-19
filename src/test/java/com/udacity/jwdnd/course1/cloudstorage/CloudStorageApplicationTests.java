@@ -11,6 +11,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 class CloudStorageApplicationTests {
 	private static final String USERNAME = "foo";
 	private static final String PASSWORD = "barbaz";
+	private static final String CREDENTIAL_URL = "https://www.google.com";
+	public static final String FIRST_NAME = "Cisco";
+	public static final String LAST_NAME = "Delgado";
 
 	@LocalServerPort
 	private int port;
@@ -61,7 +64,7 @@ class CloudStorageApplicationTests {
 	public void itShouldSignupLoginAndLogout() {
 		SignUpPage signUpPage = new SignUpPage(driver, port);
 		signUpPage.get();
-		signUpPage.signup("Cisco", "Delgado", USERNAME, PASSWORD);
+		signUpPage.signup(FIRST_NAME, LAST_NAME, USERNAME, PASSWORD);
 
 		LoginPage loginPage = new LoginPage(driver, port);
 		loginPage.get();
@@ -116,15 +119,50 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals(noteNewDescription, notesView.noteDescriptionFromList());
 	}
 
+	@Test
+	public void itShouldCreateAndDeleteCredentials() {
+		CredentialsView credentialsView = new CredentialsView(driver, port);
+		credentialsView.get();
+		credentialsView.createNewCredential(CREDENTIAL_URL, USERNAME, PASSWORD);
+
+		assertResultIsSuccess();
+
+		credentialsView.get();
+
+		Assertions.assertEquals(1, credentialsView.numberOfDisplayedCredentials());
+		Assertions.assertEquals(CREDENTIAL_URL, credentialsView.credentialUrlFromList());
+		Assertions.assertEquals(USERNAME, credentialsView.credentialUsernameFromList());
+		Assertions.assertEquals(PASSWORD, credentialsView.credentialPlainPasswordFromList());
+
+		credentialsView.deleteCredential();
+		credentialsView.get();
+
+		Assertions.assertEquals(0, credentialsView.numberOfDisplayedCredentials());
+	}
+
+	@Test
+	public void itShouldEditAnExistingCredential() {
+		String credentialNewUrl = "https://www.amazon.com";
+		String credentialNewUsername = "compulsive_buyer";
+		String credentialNewPassword = "supersecretpassword";
+
+		CredentialsView credentialsView = new CredentialsView(driver, port);
+		credentialsView.get();
+
+		credentialsView.editCredential(credentialNewUrl, credentialNewUsername, credentialNewPassword);
+
+		assertResultIsSuccess();
+
+		credentialsView.get();
+
+		Assertions.assertEquals(credentialNewUrl, credentialsView.credentialUrlFromList());
+		Assertions.assertEquals(credentialNewUsername, credentialsView.credentialUsernameFromList());
+		Assertions.assertEquals(credentialNewPassword, credentialsView.credentialPlainPasswordFromList());
+	}
+
 	private void assertResultIsSuccess() {
 		Assertions.assertEquals("Result", driver.getTitle());
 		WebElement resultTitle = driver.findElement(By.tagName("h1"));
 		Assertions.assertEquals("Success", resultTitle.getText());
-	}
-
-	private void logout() {
-		HomePage homePage = new HomePage(driver, port);
-
-		homePage.logout();
 	}
 }
