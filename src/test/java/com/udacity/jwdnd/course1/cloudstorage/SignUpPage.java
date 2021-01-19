@@ -24,6 +24,9 @@ public class SignUpPage {
     @FindBy(id = "buttonSignup")
     private WebElement buttonSignup;
 
+    @FindBy(className = "alert-danger")
+    private WebElement alertMessage;
+
     public SignUpPage(WebDriver driver, int port) {
         this.driver = driver;
         this.port = port;
@@ -46,5 +49,9 @@ public class SignUpPage {
 
     public String title() {
         return driver.getTitle();
+    }
+
+    public Boolean isError() {
+        return alertMessage != null;
     }
 }

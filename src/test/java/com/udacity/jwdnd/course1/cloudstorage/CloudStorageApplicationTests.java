@@ -79,6 +79,16 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	public void itShouldNotAllowRegistrationOfMoreThanOneUserWithTheSameUsername() {
+		SignUpPage signUpPage = new SignUpPage(driver, port);
+		signUpPage.get();
+		signUpPage.signup(FIRST_NAME, LAST_NAME, USERNAME, PASSWORD);
+		signUpPage.signup(FIRST_NAME, LAST_NAME, USERNAME, PASSWORD);
+
+		Assertions.assertTrue(signUpPage.isError());
+	}
+
+	@Test
 	public void itShouldCreateAndDeleteNotes() {
 		String noteTitle = "Note 1";
 		String noteDescription = "Lorem ipsum";
