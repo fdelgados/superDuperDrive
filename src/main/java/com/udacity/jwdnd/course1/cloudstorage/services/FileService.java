@@ -43,15 +43,24 @@ public class FileService {
         return new FileDto(file.getFileId(), userId, file.getFileName());
     }
 
-    public void createFile(MultipartFile uploadedFile, Integer userId) throws IOException {
-        File file = new File(uploadedFile.getOriginalFilename(),
-                uploadedFile.getContentType(),
-                uploadedFile.getSize(),
-                userId,
-                uploadedFile.getBytes()
-        );
+    public void createFile(MultipartFile uploadedFile, Integer userId) throws UnableToUploadFileException {
+        String fileName = uploadedFile.getOriginalFilename();
+        File file = fileMapper.searchByName(fileName);
+        if (file != null) {
+            throw new UnableToUploadFileException("A file with name '" + fileName + "' already exists" );
+        }
 
-        fileMapper.add(file);
+        try {
+            file = new File(fileName,
+                    uploadedFile.getContentType(),
+                    uploadedFile.getSize(),
+                    userId,
+                    uploadedFile.getBytes()
+            );
+            fileMapper.add(file);
+        } catch (IOException e) {
+            throw new UnableToUploadFileException("Cannot upload file");
+        }
     }
 
     public void removeFile(Integer id) throws UnableToDeleteFileException {

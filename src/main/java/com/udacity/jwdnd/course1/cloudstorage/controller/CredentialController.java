@@ -24,7 +24,7 @@ public class CredentialController {
             credentialService.saveCredential(credentialDto);
             model.addAttribute("success", true);
         } catch (CredentialNotFoundException | UnableToSaveCredentialException e) {
-            model.addAttribute("error", true);
+            model.addAttribute("error", e.getMessage());
         }
 
         return "result";
@@ -36,7 +36,7 @@ public class CredentialController {
             credentialService.removeCredential(id);
             model.addAttribute("success", true);
         } catch (UnableToDeleteCredentialException e) {
-            model.addAttribute("error", true);
+            model.addAttribute("error", e.getMessage());
         }
 
         return "result";

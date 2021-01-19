@@ -2,13 +2,11 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.FileNotFoundException;
-import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UnableToDeleteFileException;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +33,8 @@ public class FileController {
         try {
             fileService.createFile(file, user.getUserId());
             model.addAttribute("success", true);
-        } catch (IOException e) {
-            model.addAttribute("error", true);
+        } catch (UnableToUploadFileException e) {
+            model.addAttribute("error", e.getMessage());
         }
         return "result";
     }
@@ -47,7 +45,7 @@ public class FileController {
             fileService.removeFile(id);
             model.addAttribute("success", true);
         } catch (UnableToDeleteFileException e) {
-            model.addAttribute("error", true);
+            model.addAttribute("error", e.getMessage());
         }
 
         return "result";
@@ -70,13 +68,13 @@ public class FileController {
                 response.getWriter().write(nRead);
             }
         } catch (FileNotFoundException e) {
-            response.sendRedirect("/file/download-error");
+            response.sendRedirect("/file/download-error/" + e.getMessage());
         }
     }
 
-    @GetMapping("/file/download-error")
-    public String downloadError(Model model) {
-        model.addAttribute("error", true);
+    @GetMapping("/file/download-error/{message}")
+    public String downloadError(@PathVariable("message") String message, Model model) {
+        model.addAttribute("error", message);
 
         return "result";
     }

@@ -25,7 +25,7 @@ public class NoteController {
             noteService.saveNote(noteDto);
             model.addAttribute("success", true);
         } catch (UnableToSaveNoteException | NoteNotFoundException e) {
-            model.addAttribute("error", true);
+            model.addAttribute("error", e.getMessage());
         }
 
         return "result";
@@ -37,7 +37,7 @@ public class NoteController {
             noteService.deleteNote(id);
             model.addAttribute("success", true);
         } catch (UnableToDeleteNoteException e) {
-            model.addAttribute("error", true);
+            model.addAttribute("error", e.getMessage());
         }
 
         return "result";
