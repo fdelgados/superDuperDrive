@@ -61,6 +61,16 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	public void itShouldRedirectToADefaultErrorPageWhenInvalidUrlRequestedAfterLogin() {
+		HomePage homePage = new HomePage(driver, port);
+		homePage.get();
+
+		driver.get("http://localhost:" + port + "/invalid");
+
+		Assertions.assertEquals("Page not found", driver.getTitle());
+	}
+
+	@Test
 	public void itShouldSignupLoginAndLogout() {
 		SignUpPage signUpPage = new SignUpPage(driver, port);
 		signUpPage.get();
