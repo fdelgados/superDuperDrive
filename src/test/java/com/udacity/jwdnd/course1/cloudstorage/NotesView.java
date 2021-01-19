@@ -11,8 +11,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 public class NotesView extends HomePage {
-    protected final JavascriptExecutor jsExecutor;
-    protected final WebDriverWait wait;
+    private final JavascriptExecutor jsExecutor;
+    private final WebDriverWait wait;
 
     @FindBy(id = "nav-notes-tab")
     private WebElement notesTab;

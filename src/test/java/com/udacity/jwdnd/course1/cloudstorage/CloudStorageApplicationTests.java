@@ -72,6 +72,15 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	public void itShouldSignupNewUsers() {
+		SignUpPage signUpPage = new SignUpPage(driver, port);
+		signUpPage.get();
+		signUpPage.signup(FIRST_NAME, LAST_NAME, "myusername", PASSWORD);
+
+		Assertions.assertEquals("Login", driver.getTitle());
+	}
+
+	@Test
 	public void itShouldSignupLoginAndLogout() {
 		SignUpPage signUpPage = new SignUpPage(driver, port);
 		signUpPage.get();
@@ -93,8 +102,9 @@ class CloudStorageApplicationTests {
 	public void itShouldNotAllowRegistrationOfMoreThanOneUserWithTheSameUsername() {
 		SignUpPage signUpPage = new SignUpPage(driver, port);
 		signUpPage.get();
-		signUpPage.signup(FIRST_NAME, LAST_NAME, USERNAME, PASSWORD);
-		signUpPage.signup(FIRST_NAME, LAST_NAME, USERNAME, PASSWORD);
+		signUpPage.signup(FIRST_NAME, LAST_NAME, "sillyusername", PASSWORD);
+		signUpPage.get();
+		signUpPage.signup(FIRST_NAME, LAST_NAME, "sillyusername", PASSWORD);
 
 		Assertions.assertTrue(signUpPage.isError());
 	}

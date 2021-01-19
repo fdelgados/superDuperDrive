@@ -28,9 +28,8 @@ public class SignupController {
     public String signup(User user, Model model) {
         try {
             userService.signup(user);
-            model.addAttribute("success", true);
 
-            return "signup";
+            return "redirect:/login?signedup";
         } catch (UserIsNotAvailableException | UnableToCreateUserException e) {
             model.addAttribute("error", e.getMessage());
 
