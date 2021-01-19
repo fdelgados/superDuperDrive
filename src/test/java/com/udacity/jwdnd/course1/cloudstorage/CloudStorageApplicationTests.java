@@ -191,6 +191,18 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals(credentialNewPassword, credentialsView.credentialPlainPasswordFromList());
 	}
 
+	@Test
+	public void itShouldNotAllowUploadingOfEmptyFiles() {
+		FilesView filesView = new FilesView(driver, port);
+		filesView.get();
+
+		filesView.uploadEmptyFile();
+
+		Assertions.assertEquals("Result", driver.getTitle());
+		WebElement resultTitle = driver.findElement(By.tagName("h1"));
+		Assertions.assertEquals("Error", resultTitle.getText());
+	}
+
 	private void assertResultIsSuccess() {
 		Assertions.assertEquals("Result", driver.getTitle());
 		WebElement resultTitle = driver.findElement(By.tagName("h1"));

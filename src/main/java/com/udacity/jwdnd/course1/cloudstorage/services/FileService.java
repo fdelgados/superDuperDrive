@@ -45,6 +45,11 @@ public class FileService {
 
     public void createFile(MultipartFile uploadedFile, Integer userId) throws UnableToUploadFileException {
         String fileName = uploadedFile.getOriginalFilename();
+
+        if (fileName == null || fileName.isEmpty()) {
+            throw new UnableToUploadFileException("File cannot be empty");
+        }
+
         File file = fileMapper.searchByName(fileName);
         if (file != null) {
             throw new UnableToUploadFileException("A file with name '" + fileName + "' already exists" );
