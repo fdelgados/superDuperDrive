@@ -68,11 +68,11 @@ public class FileController {
                 response.getWriter().write(nRead);
             }
         } catch (FileNotFoundException e) {
-            response.sendRedirect("/file/download-error/" + e.getMessage());
+            response.sendRedirect("/file/error/" + e.getMessage());
         }
     }
 
-    @GetMapping("/file/download-error/{message}")
+    @GetMapping("/file/error/{message}")
     public String downloadError(@PathVariable("message") String message, Model model) {
         model.addAttribute("error", message);
 
